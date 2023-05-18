@@ -18,18 +18,11 @@ public class DB {
         }
         }
     }
-
-    public void select() throws SQLException {
-        Statement stmt = con.createStatement();
-        String sql = "SELECT * FROM medici";
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            int id = rs.getInt("id_medic");
-            String name = rs.getString("nume");
-            System.out.println(id + ", " + name);
-        }
-        }
-
+    public Connection getCon(){
+            return con;
     }
+
+
+}
 
 

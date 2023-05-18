@@ -11,6 +11,8 @@ module com.example.hospitalplaner {
 //    requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires java.desktop;
+    requires jcalendar;
 
     opens com.example.hospitalplaner to javafx.fxml;
     exports com.example.hospitalplaner;

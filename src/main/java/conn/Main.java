@@ -6,6 +6,7 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
         DB conn =  new DB();
-        conn.select();
+        Medici medic = new Medici();
+        new MainFrame().setVisible(true);
     }
 }
