@@ -24,12 +24,12 @@ public class Programari {
              Statement statement = connection.createStatement()) {
             String script="create table programari(\n" +
                     "id NUMBER(5) PRIMARY KEY,\n" +
-                    "idmedic NUMBER(5),\n" +
-                    "idpacient NUMBER(5),\n" +
-                    "dataprogramarii DATE,\n" +
-                    "oraprogramarii VARCHAR(8),\n" +
-                    "FOREIGN KEY (idmedic) REFERENCES medici(idmedic),\n" +
-                    "FOREIGN KEY (idpacient) REFERENCES pacienti(idpacient)\n" +
+                    "id_medic NUMBER(5),\n" +
+                    "id_pacient NUMBER(5),\n" +
+                    "data DATE,\n" +
+                    "ora VARCHAR(8),\n" +
+                    "FOREIGN KEY (id_medic) REFERENCES medici(id),\n" +
+                    "FOREIGN KEY (id_pacient) REFERENCES pacienti(id)\n" +
                     ")";
             statement.executeUpdate(script);
             System.out.println("Script executed successfully.");

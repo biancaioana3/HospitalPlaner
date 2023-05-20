@@ -92,7 +92,7 @@ public class RegisterForm  extends JDialog{
         String sql = "DECLARE " +
                 "    last_insert_id NUMBER; " +
                 "BEGIN " +
-                "    INSERT INTO users (nume, prenume, telefon, email, parola, ismedic) " +
+                "    INSERT INTO users (nume, prenume, telefon, email, parola, is_medic) " +
                 "    VALUES (?,?,?,?,?,?) " +
                 "    RETURNING id INTO last_insert_id; " +
                 "    ? := last_insert_id; " +

@@ -96,7 +96,7 @@ public class MedicRegister extends JDialog {
 
         DB connection = new DB();
         Connection conn = connection.getCon();
-        String sql ="UPDATE MEDICI SET IDSECTIE =? WHERE IDUSER =?";
+        String sql ="UPDATE MEDICI SET ID_SECTIE =? WHERE ID_USER =?";
         CallableStatement callableStatement = conn.prepareCall(sql);
         callableStatement.setInt(1, specializare);
         callableStatement.setInt(2,id);
@@ -105,7 +105,7 @@ public class MedicRegister extends JDialog {
 
 
         Medici medicDate = new Medici();
-        int idmedic = Integer.parseInt(medicDate.selectMedicDyUserId(id, "idmedic"));
+        int idmedic = Integer.parseInt(medicDate.selectMedicDyUserId(id, "id"));
 
         if (idmedic > 0) {
             medici = new Medici();
@@ -122,7 +122,7 @@ public class MedicRegister extends JDialog {
 
         callableStatement.close();
 
-        String sqlProgram ="INSERT INTO PROGRAM (idmedic, luni, marti, miercuri, joi, vineri) VALUES (?,?,?,?,?,?) " ;
+        String sqlProgram ="INSERT INTO PROGRAM (id, luni, marti, miercuri, joi, vineri) VALUES (?,?,?,?,?,?) " ;
         CallableStatement callableStatementProgram = conn.prepareCall(sqlProgram);
         callableStatementProgram.setInt(1, idmedic);
         callableStatementProgram.setInt(2, pLuni);
@@ -157,12 +157,12 @@ public class MedicRegister extends JDialog {
             DB con = new DB();
             connection = con.getCon();
 
-            String query = "SELECT NUMESECTIE FROM SECTII";
+            String query = "SELECT NUME FROM SECTII";
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                String nume = resultSet.getString("NUMESECTIE");
+                String nume = resultSet.getString("NUME");
                 comboBox.addItem(nume);
             }
         } catch (SQLException e) {

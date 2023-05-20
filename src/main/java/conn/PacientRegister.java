@@ -5,12 +5,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class PacientRegister extends JDialog{
+    public int id;
+    public Pacienti pacienti;
     private JPanel panel1;
     private JTextField JtAdresa;
-    private JDateChooser  JtDataNasteri;
+    private JDateChooser JtDataNasteri;
     private JSpinner JsVarsta;
     private JComboBox JcGen;
     private JButton JbSave;
@@ -18,6 +23,7 @@ public class PacientRegister extends JDialog{
 
     public PacientRegister(JFrame parent, int id){
         super(parent);
+        this.id = id;
         setTitle("Create new account");
         setContentPane(pacientRegister);
         setMaximumSize(new Dimension(450, 474));
@@ -26,16 +32,78 @@ public class PacientRegister extends JDialog{
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        setVisible(true);
         JbSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registerPacient();
+                try {
+                    registerPacient();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
+
+        setVisible(true);
     }
 
-    private void registerPacient() {
+    private void registerPacient() throws SQLException {
+        String adresa = JtAdresa.getText();
+        int varsta = (int) JsVarsta.getValue();
+        Date datanasterii = JtDataNasteri.getDate();
+        int gen = JcGen.getSelectedIndex();
+
+        pacienti = addPacientToDB(adresa,varsta,datanasterii,gen);
+
+        if(adresa.isEmpty() || varsta <= 0  || gen < 0){
+            JOptionPane.showMessageDialog(this, "Te rugam completeaza toate campurile!", "Mai incearca o data!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if(pacienti != null){
+            System.out.println(pacienti);
+            dispose();
+        }
+        else{
+            JOptionPane.showMessageDialog(this,"Eroare in inregistrarea noului pacient" , "Mai incearca", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private Pacienti addPacientToDB(String adresa, int varsta, Date datanasterii,int gen) throws SQLException {
+
+        Pacienti pacient = null;
+
+        DB connection = new DB();
+        Connection conn = connection.getCon();
+        String sql ="UPDATE PACIENTI SET adresa =?, data_nasterii= ? , varsta=?, gen=? WHERE ID_USER =?";
+        CallableStatement callableStatement = conn.prepareCall(sql);
+        callableStatement.setString(1, adresa);
+        callableStatement.setDate(2, new java.sql.Date(datanasterii.getTime()));
+
+        callableStatement.setInt(3, varsta);
+        callableStatement.setInt(4, gen);
+        callableStatement.setInt(5,id);
+
+        callableStatement.execute();
+
+
+        Pacienti pacientDate = new Pacienti();
+        int id_pacient = Integer.parseInt(pacientDate.selectPacientDyUserId(id, "id"));
+
+        if (id_pacient > 0) {
+            pacient = new Pacienti();
+            pacient.id = id_pacient;
+            pacient.adresa = adresa;
+            pacient.varsta = varsta;
+            pacient.gen = gen;
+
+        } else {
+            throw new SQLException("Failed to retrieve the last inserted ID.");
+        }
+
+        callableStatement.close();
+
+        conn.close();
+        return pacient;
     }
 
     public static void main(String[] args) {

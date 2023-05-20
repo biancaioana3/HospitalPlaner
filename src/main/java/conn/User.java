@@ -32,7 +32,7 @@ public class User {
              Statement statement = connection.createStatement()) {
             String script="create table users(\n" +
                     "id NUMBER(5) PRIMARY KEY,\n" +
-                    "ismedic NUMBER(1,0),\n" +
+                    "is_medic NUMBER(1,0),\n" +
                     "email VARCHAR2(60),\n" +
                     "parola VARCHAR2(60),\n" +
                     "nume VARCHAR2(60),\n" +
@@ -65,7 +65,7 @@ public class User {
     }
 
 
-    public void insertTrigger(){
+    public void insertMedicTrigger(){
         DB conn = new DB();
         Connection connection = conn.getCon();
         try (connection;
@@ -75,8 +75,32 @@ public class User {
                             "AFTER INSERT ON USERS\n" +
                             "FOR EACH ROW\n" +
                             "BEGIN\n" +
-                            "  INSERT INTO medici (iduser, numemedic, prenumemedic)\n" +
-                            "  VALUES (:NEW.id, :NEW.nume, :NEW.prenume);\n" +
+                            "  IF (:NEW.is_medic = 1) THEN\n" +
+                            "  INSERT INTO medici (id_user, nume, prenume, telefon)\n" +
+                            "  VALUES (:NEW.id, :NEW.nume, :NEW.prenume, :NEW.telefon);\n" +
+                            "  END IF;\n" +
+                            "END;";
+            statement.executeUpdate(script);
+            System.out.println("Script executed successfully.");
+        } catch (SQLException e) {
+            System.err.println("Error executing script: " + e.getErrorCode() + " - " + e.getMessage());
+        }
+    }
+
+    public void insertPacientTrigger(){
+        DB conn = new DB();
+        Connection connection = conn.getCon();
+        try (connection;
+             Statement statement = connection.createStatement()) {
+            String script =
+                    "CREATE OR REPLACE TRIGGER inserare_pacient_trigger\n" +
+                            "AFTER INSERT ON USERS\n" +
+                            "FOR EACH ROW\n" +
+                            "BEGIN\n" +
+                            "  IF (:NEW.is_medic = 0) THEN\n" +
+                            "  INSERT INTO pacienti (id_user, nume, prenume, telefon)\n" +
+                            "  VALUES (:NEW.id, :NEW.nume, :NEW.prenume, :NEW.telefon);\n" +
+                            "  END IF;\n" +
                             "END;";
             statement.executeUpdate(script);
             System.out.println("Script executed successfully.");
@@ -88,11 +112,12 @@ public class User {
         createSequens();
         createTable();
         createTrigger();
-        insertTrigger();
+        //insertMedicTrigger();
     }
     public static void main(String[] args) {
         User user = new User();
-        user.insertTrigger();
+        user.insertMedicTrigger();
+        user.insertPacientTrigger();
     }
 
 
