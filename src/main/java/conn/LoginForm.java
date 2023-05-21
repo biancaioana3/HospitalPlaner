@@ -98,6 +98,13 @@ public class LoginForm extends JDialog{
             System.out.println("Email: " +user.email);
             System.out.println("Telefon: " + user.telefon);
 
+            if(user.isMedic == 1){
+                int medic_id = user.id;
+                MedicDashboard medicDashboard = new MedicDashboard(null, medic_id);
+            }else if (user.isMedic == 0){
+                PacientDashboard pacientDashboard = new PacientDashboard();
+            }
+
         }else{
             System.out.println("Authentication canceled!");
         }

@@ -11,6 +11,11 @@ public class Medici {
     public int miercuri;
     public int joi;
     public int vineri;
+    public int id_user;
+    public String nume;
+    public String prenume;
+    public String telefon;
+
     public void createSequens(){
         DB conn = new DB();
         Connection connection = conn.getCon();
