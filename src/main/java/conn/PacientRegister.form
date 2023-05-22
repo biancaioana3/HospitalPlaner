@@ -54,9 +54,6 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties>
-              <text value=""/>
-            </properties>
           </component>
           <component id="5641b" class="javax.swing.JSpinner" binding="JsVarsta">
             <constraints>
@@ -78,6 +75,7 @@
             </constraints>
             <properties>
               <model>
+                <item value="Selecteaza:"/>
                 <item value="Feminin"/>
                 <item value="Masculin"/>
               </model>

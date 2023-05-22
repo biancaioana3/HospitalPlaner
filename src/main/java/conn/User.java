@@ -33,11 +33,13 @@ public class User {
             String script="create table users(\n" +
                     "id NUMBER(5) PRIMARY KEY,\n" +
                     "is_medic NUMBER(1,0),\n" +
-                    "email VARCHAR2(60),\n" +
+                    "email VARCHAR2(60) UNIQUE,\n" +
                     "parola VARCHAR2(60),\n" +
                     "nume VARCHAR2(60),\n" +
                     "prenume VARCHAR2(60),\n" +
-                    "telefon VARCHAR2(10)\n" +
+                    "telefon VARCHAR2(10),\n" +
+                    "created_at DATE DEFAULT SYSDATE,\n" +
+                    "updated_at DATE DEFAULT SYSDATE\n"+
                     ")";
             statement.executeUpdate(script);
             System.out.println("Script executed successfully.");
@@ -116,6 +118,7 @@ public class User {
     }
     public static void main(String[] args) {
         User user = new User();
+//        user.createUser();
         user.insertMedicTrigger();
         user.insertPacientTrigger();
     }

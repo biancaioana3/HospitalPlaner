@@ -30,6 +30,8 @@ public class ProgramDoctori {
                     "miercuri NUMBER(1),\n" +
                     "joi NUMBER(1),\n" +
                     "vineri NUMBER(1),\n" +
+                    "created_at DATE DEFAULT SYSDATE,\n" +
+                    "updated_at DATE DEFAULT SYSDATE,\n" +
                     "FOREIGN KEY (id_medic) REFERENCES medici(id)\n" +
                     ")\n";
             statement.executeUpdate(script);

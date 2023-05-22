@@ -28,6 +28,8 @@ public class Programari {
                     "id_pacient NUMBER(5),\n" +
                     "data DATE,\n" +
                     "ora VARCHAR(8),\n" +
+                    "created_at DATE DEFAULT SYSDATE,\n" +
+                    "updated_at DATE DEFAULT SYSDATE,\n" +
                     "FOREIGN KEY (id_medic) REFERENCES medici(id),\n" +
                     "FOREIGN KEY (id_pacient) REFERENCES pacienti(id)\n" +
                     ")";

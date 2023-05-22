@@ -8,6 +8,10 @@ public class Pacienti {
     public int varsta;
     public Date datanasterii;
     public int gen;
+    String nume;
+    String prenume;
+    String telefon;
+    int id_user;
     public void createSequens(){
         DB conn = new DB();
         Connection connection = conn.getCon();
@@ -32,9 +36,11 @@ public class Pacienti {
                     "adresa VARCHAR2(25),\n" +
                     "data_nasterii DATE, \n" +
                     "varsta NUMBER(2),\n" +
-                    "gen VARCHAR(10),\n" +
+                    "gen NUMBER(2),\n" +
                     "id_user NUMBER(5),\n" +
                     "telefon VARCHAR(10),\n" +
+                    "created_at DATE DEFAULT SYSDATE,\n" +
+                    "updated_at DATE DEFAULT SYSDATE,\n" +
                     "FOREIGN KEY (id_user) REFERENCES USERS(id)\n" +
                     ")";
             statement.executeUpdate(script);
@@ -76,6 +82,31 @@ public class Pacienti {
         }
 
         return "SELECT ERROR!";
+    }
+    public Pacienti selectPacientById(int id) throws SQLException {
+        Pacienti pacienti = new Pacienti();
+        DB conn = new DB();
+        Connection connection = conn.getCon();
+
+        Statement statement = connection.createStatement();
+        String script =
+                "SELECT * FROM PACIENTI WHERE ID=?";
+        PreparedStatement stmt = connection.prepareStatement(script);
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            pacienti.id = resultSet.getInt("id");
+            pacienti.nume = resultSet.getString("nume");
+            pacienti.prenume = resultSet.getString("prenume");
+            pacienti.adresa = resultSet.getString("adresa");
+            pacienti.datanasterii = resultSet.getDate("data_nasterii");
+            pacienti.varsta = resultSet.getInt("varsta");
+            pacienti.gen = resultSet.getInt("gen");
+            pacienti.id_user = resultSet.getInt("id_user");
+            pacienti.telefon = resultSet.getString("telefon");
+        }
+
+        return pacienti;
     }
     public void createPacienti(){
         createSequens();

@@ -14,30 +14,40 @@ public class MedicDashboard extends JDialog{
     private JTextArea textPacient;
     private JButton addProgramare;
     private JButton cencel;
+    public int user_id;
     public int medic_id;
 
-    public MedicDashboard(JDialog parent, int medic_id){
+    public MedicDashboard(JDialog parent, int user_id){
         super(parent);
-        this.medic_id = medic_id;
+        this.user_id = user_id;
         setTitle("Login");
         setContentPane(panel1);
         setMaximumSize(new Dimension(450, 474));
-        setSize(500, 450);
+        setSize(700, 600);
 
-        Medici medic = selectMedici(medic_id);
+        Medici medic = selectMedici(user_id);
+        this.medic_id = medic.id;
         numeMedic.setText(medic.nume + " " + medic.prenume);
         String specializareMedic = getMedicSpecializare(medic.specializare);
         System.out.println(specializareMedic);
         specializare.setText(specializareMedic);
         textPacient.setEditable(false);
+        textPacient.setLineWrap(true);
+        textPacient.setWrapStyleWord(false);
         telefonMedic.setText(medic.telefon);
         pacientSelect();
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+        cencel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
 
         setVisible(true);
+
     }
 
     private void pacientSelect() {
@@ -59,9 +69,13 @@ public class MedicDashboard extends JDialog{
                 int id_pacient = resultSet.getInt("id_pacient");
                 String ora = resultSet.getString("ora");
                 Date data = resultSet.getDate("data");
-
-
-                String resultRow = "ID: " + id + " ID pacient: " + id_pacient + " Ora: " + ora + " Data: " + data;
+                Pacienti pacient = new Pacienti();
+                pacient = pacient.selectPacientById(id_pacient);
+                String resultRow = "Nume: " + pacient.nume + "\n" +
+                        " Prenume: " + pacient.prenume + "\n" +
+                        " Telefon: " + pacient.telefon + "\n" +
+                        " Ora: " + ora + "\n" +
+                        " Data: " + data + "\n\n";
                 JLabel resultLabel = new JLabel(resultRow);
                 JButton fisaPacientButton = new JButton("Fisa pacient");
 
@@ -120,16 +134,16 @@ public class MedicDashboard extends JDialog{
     }
 
     Medici medic = new Medici();
-    public Medici selectMedici(int medic_id){
+    public Medici selectMedici(int user_id){
         Medici medic = new Medici();
 
         try {
             DB con = new DB();
             Connection conn = con.getCon();
             Statement stmt = conn.createStatement();
-            String query = "SELECT * FROM MEDICI WHERE ID = ?";
+            String query = "SELECT * FROM MEDICI WHERE ID_USER = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setInt(1, medic_id);
+            preparedStatement.setInt(1, user_id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -153,6 +167,6 @@ public class MedicDashboard extends JDialog{
 
 
     public static void main(String[] args) {
-        MedicDashboard medicDashboard = new MedicDashboard(null, 3);
+        MedicDashboard medicDashboard = new MedicDashboard(null, 14);
     }
 }

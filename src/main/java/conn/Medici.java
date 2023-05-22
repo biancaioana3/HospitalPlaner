@@ -41,6 +41,8 @@ public class Medici {
                 "id_sectie NUMBER(5),\n" +
                 "id_user NUMBER(5),\n" +
                 "telefon VARCHAR(10),\n" +
+                "created_at DATE DEFAULT SYSDATE,\n" +
+                "updated_at DATE DEFAULT SYSDATE,\n" +
                 "FOREIGN KEY (id_sectie) REFERENCES SECTII(id),\n" +
                 "FOREIGN KEY (id_user) REFERENCES USERS(id)\n" +
                 ")";
