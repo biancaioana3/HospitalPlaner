@@ -101,7 +101,7 @@ public class LoginForm extends JDialog{
             if(user.isMedic == 1){
                 MedicDashboard medicDashboard = new MedicDashboard(null, user.id);
             }else if (user.isMedic == 0){
-                PacientDashboard pacientDashboard = new PacientDashboard();
+                PacientDashboard pacientDashboard = new PacientDashboard(null, user.id);
             }
 
         }else{

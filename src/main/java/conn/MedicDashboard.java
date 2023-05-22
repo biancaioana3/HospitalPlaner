@@ -23,17 +23,20 @@ public class MedicDashboard extends JDialog{
         setTitle("Login");
         setContentPane(panel1);
         setMaximumSize(new Dimension(450, 474));
-        setSize(700, 600);
+        setSize(700, 650);
 
         Medici medic = selectMedici(user_id);
         this.medic_id = medic.id;
         numeMedic.setText(medic.nume + " " + medic.prenume);
-        String specializareMedic = getMedicSpecializare(medic.specializare);
+        String specializareMedic = medic.specializare;
         System.out.println(specializareMedic);
         specializare.setText(specializareMedic);
         textPacient.setEditable(false);
         textPacient.setLineWrap(true);
         textPacient.setWrapStyleWord(false);
+        textPacient.setRows(5);
+        textPacient.setColumns(2);
+
         telefonMedic.setText(medic.telefon);
         pacientSelect();
         setModal(true);
@@ -61,8 +64,9 @@ public class MedicDashboard extends JDialog{
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            JPanel resultPanel = new JPanel();
+            JTextArea resultPanel = new JTextArea();
             resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+
 
             while (resultSet.next()){
                 int id = resultSet.getInt("id");
@@ -71,13 +75,19 @@ public class MedicDashboard extends JDialog{
                 Date data = resultSet.getDate("data");
                 Pacienti pacient = new Pacienti();
                 pacient = pacient.selectPacientById(id_pacient);
-                String resultRow = "Nume: " + pacient.nume + "\n" +
-                        " Prenume: " + pacient.prenume + "\n" +
+                String resultRow = "Nume: " + pacient.nume +
+                        " Prenume: " + pacient.prenume +
                         " Telefon: " + pacient.telefon + "\n" +
-                        " Ora: " + ora + "\n" +
+                        " Ora: " + ora  +
                         " Data: " + data + "\n\n";
-                JLabel resultLabel = new JLabel(resultRow);
+                JTextArea resultLabel = new JTextArea(resultRow);
+
+
                 JButton fisaPacientButton = new JButton("Fisa pacient");
+                fisaPacientButton.setPreferredSize(new Dimension(150, 20)); // setarea dimensiunii personalizate
+
+                JButton updateProgramare = new JButton("Modifica programarea");
+                updateProgramare.setPreferredSize(new Dimension(200, 20)); // setarea dimensiunii personalizate
 
                 fisaPacientButton.addActionListener(new ActionListener() {
                     @Override
@@ -86,9 +96,21 @@ public class MedicDashboard extends JDialog{
                     }
                 });
 
+                updateProgramare.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.out.println("Upadate programare: " + id_pacient);
+                    }
+                });
+                JPanel buttonsPanel = new JPanel();
+                buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+                buttonsPanel.add(fisaPacientButton);
+                buttonsPanel.add(updateProgramare);
+
                 JPanel rowPanel = new JPanel(new BorderLayout());
-                rowPanel.add(resultLabel, BorderLayout.CENTER);
-                rowPanel.add(fisaPacientButton, BorderLayout.EAST);
+                rowPanel.add(resultLabel, BorderLayout.WEST);
+                rowPanel.add(buttonsPanel, BorderLayout.EAST);
+
 
                 resultPanel.add(rowPanel);
 
@@ -106,32 +128,6 @@ public class MedicDashboard extends JDialog{
         }
     }
 
-    Sectii sectie = new Sectii();
-    private String getMedicSpecializare(int id) {
-        String specializare = " ";
-        try {
-            DB con = new DB();
-            Connection conn = con.getCon();
-            Statement stmt = conn.createStatement();
-            String query = "SELECT * FROM SECTII WHERE ID = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                sectie = new Sectii();
-                sectie.nume = resultSet.getString("nume");
-            }
-            specializare = sectie.nume;
-            stmt.close();
-            conn.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return specializare;
-    }
 
     Medici medic = new Medici();
     public Medici selectMedici(int user_id){
@@ -149,7 +145,7 @@ public class MedicDashboard extends JDialog{
 
             if (resultSet.next()){
                 medic = new Medici();
-                medic.specializare = resultSet.getInt("id_sectie");
+                medic.specializare = medic.getMedicSpecializare(resultSet.getInt("id_sectie"));
                 medic.id_user = resultSet.getInt("id_user");
                 medic.nume = resultSet.getString("nume");
                 medic.id = resultSet.getInt("id");
@@ -167,6 +163,6 @@ public class MedicDashboard extends JDialog{
 
 
     public static void main(String[] args) {
-        MedicDashboard medicDashboard = new MedicDashboard(null, 14);
+        MedicDashboard medicDashboard = new MedicDashboard(null, 1);
     }
 }

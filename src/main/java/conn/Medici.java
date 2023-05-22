@@ -5,7 +5,7 @@ import java.sql.*;
 public class Medici {
 
     public int id;
-    public int specializare;
+    public String specializare;
     public int luni;
     public int marti;
     public int miercuri;
@@ -88,6 +88,54 @@ public class Medici {
         return "SELECT ERROR!";
     }
 
+    public Medici selectMedicById(int id) throws SQLException {
+        Medici medic = new Medici();
+        DB conn = new DB();
+        Connection connection = conn.getCon();
+
+        Statement statement = connection.createStatement();
+        String script =
+                "SELECT * FROM MEDICI WHERE ID=?";
+        PreparedStatement stmt = connection.prepareStatement(script);
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            medic.id = resultSet.getInt("id");
+            medic.nume = resultSet.getString("nume");
+            medic.prenume = resultSet.getString("prenume");
+            medic.specializare = getMedicSpecializare(resultSet.getInt("id_sectie"));
+            medic.id_user = resultSet.getInt("id_user");
+            medic.telefon = resultSet.getString("telefon");
+        }
+
+        return medic;
+    }
+    Sectii sectie = new Sectii();
+    public String getMedicSpecializare(int id) {
+        String specializare = " ";
+        try {
+            DB con = new DB();
+            Connection conn = con.getCon();
+            Statement stmt = conn.createStatement();
+            String query = "SELECT * FROM SECTII WHERE ID = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                sectie = new Sectii();
+                sectie.nume = resultSet.getString("nume");
+            }
+            specializare = sectie.nume;
+            stmt.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return specializare;
+    }
     public void createMedici(){
         createSequens();
         createTable();

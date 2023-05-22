@@ -110,7 +110,7 @@ public class MedicRegister extends JDialog {
         if (idmedic > 0) {
             medici = new Medici();
             medici.id = idmedic;
-            medici.specializare = specializare;
+            medici.specializare =medici.getMedicSpecializare(specializare);
             medici.luni = pLuni;
             medici.marti = pMarti;
             medici.miercuri = pMiercuri;
