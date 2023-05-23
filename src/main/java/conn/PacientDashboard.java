@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class PacientDashboard extends JDialog{
-    private JPanel panel1;
+    private JScrollPane mainScrollPane;
+    private JPanel  panel1;
     private JLabel nume;
     private JLabel telefon;
     private JLabel adresa;
@@ -21,7 +22,10 @@ public class PacientDashboard extends JDialog{
         super(parent);
         this.user_id = user_id;
         setTitle("Login");
-        setContentPane(panel1);
+        JScrollPane mainScrollPane = new JScrollPane(panel1);
+        mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        mainScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        setContentPane(mainScrollPane);
         setMaximumSize(new Dimension(450, 474));
         setSize(700, 650);
 
@@ -39,21 +43,25 @@ public class PacientDashboard extends JDialog{
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addProgramare.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+
         cencel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-
         setVisible(true);
-
-        cencel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
     }
 
     private void programariSelect() {
@@ -72,6 +80,7 @@ public class PacientDashboard extends JDialog{
 
 
             while (resultSet.next()){
+
                 int id = resultSet.getInt("id");
                 int id_medic = resultSet.getInt("id_medic");
                 Medici medic = new Medici();
@@ -122,6 +131,8 @@ public class PacientDashboard extends JDialog{
 
             }
             JScrollPane scrollPane = new JScrollPane(resultPanel);
+            panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
+            panel1.add(scrollPane);
             textProgramari.setLayout(new BorderLayout());
             textProgramari.add(scrollPane, BorderLayout.CENTER);
 

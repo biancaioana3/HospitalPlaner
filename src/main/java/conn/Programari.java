@@ -3,8 +3,14 @@ package conn;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 public class Programari {
+    public int id;
+    public int id_medic;
+    public int id_pacient;
+    public Date date;
+    public String ora;
     public void createSequens(){
         DB conn = new DB();
         Connection connection = conn.getCon();
