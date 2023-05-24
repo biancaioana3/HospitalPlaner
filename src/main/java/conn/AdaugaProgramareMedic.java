@@ -13,10 +13,12 @@ public class AdaugaProgramareMedic extends JDialog{
     private JButton submit;
     public int specializare;
     public int id_pacient;
-    public AdaugaProgramareMedic(JFrame parent, int id_specializare, int id_pacient) throws SQLException {
+    public int id_programare;
+    public AdaugaProgramareMedic(JFrame parent, int id_specializare, int id_pacient, int id_programare) throws SQLException {
         super(parent);
         this.specializare=id_specializare;
         this.id_pacient = id_pacient;
+        this.id_programare = id_programare;
         setTitle("Create medic account");
         setContentPane(addProgPanel);
         setMaximumSize(new Dimension(450, 474));
@@ -29,21 +31,44 @@ public class AdaugaProgramareMedic extends JDialog{
 
         addProgPanel.add(submit);
 
+        if(id_programare != 0){
+            Programari prog = new Programari();
+            prog = prog.selectProgById(id_programare);
+            Medici medic = new Medici();
+            medic = medic.selectMedicById(prog.id_medic);
+
+            comboBox.setSelectedItem(medic.nume);
+            submit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        dispose();
+                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient, getMedic(), id_programare);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+
+        } else if(id_programare == 0){
+            submit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        dispose();
+                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient, getMedic(),0);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        }
+
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        submit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    dispose();
-                    AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient, getMedic());
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+
         setVisible(true);
     }
 
@@ -94,6 +119,6 @@ public class AdaugaProgramareMedic extends JDialog{
     }
 
     public static void main(String[] args) throws SQLException {
-        AdaugaProgramareMedic adaugaProgramareMedic = new AdaugaProgramareMedic(null, 4, 1);
+        AdaugaProgramareMedic adaugaProgramareMedic = new AdaugaProgramareMedic(null, 4, 1, 1);
     }
 }

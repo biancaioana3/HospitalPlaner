@@ -12,7 +12,6 @@ public class MedicDashboard extends JDialog{
     private JLabel specializare;
     private JLabel telefonMedic;
     private JTextArea textPacient;
-    private JButton addProgramare;
     private JButton cencel;
     public int user_id;
     public int medic_id;

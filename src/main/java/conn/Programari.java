@@ -1,8 +1,6 @@
 package conn;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 
 public class Programari {
@@ -63,7 +61,27 @@ public class Programari {
             System.err.println("Error executing script: " + e.getErrorCode() + " - " + e.getMessage());
         }
     }
+    public Programari selectProgById(int id) throws SQLException {
+        Programari prog = new Programari();
+        DB conn = new DB();
+        Connection connection = conn.getCon();
 
+        Statement statement = connection.createStatement();
+        String script =
+                "SELECT * FROM PROGRAMARI WHERE ID=?";
+        PreparedStatement stmt = connection.prepareStatement(script);
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()) {
+            prog.id = resultSet.getInt("id");
+            prog.id_pacient = resultSet.getInt("id_pacient");
+            prog.id_medic = resultSet.getInt("id_medic");
+            prog.date = resultSet.getDate("data");
+            prog.ora = resultSet.getString("ora");
+        }
+
+        return prog;
+    }
     public Programari(){
         createSequens();
         createTable();

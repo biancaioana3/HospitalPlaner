@@ -47,7 +47,7 @@ public class PacientDashboard extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id);
+                    AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id, 0);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -115,6 +115,11 @@ public class PacientDashboard extends JDialog{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("Upadate programare: " + id);
+                        try {
+                            AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id, id);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 });
                 JPanel buttonsPanel = new JPanel();

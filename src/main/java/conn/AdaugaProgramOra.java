@@ -22,13 +22,15 @@ public class AdaugaProgramOra extends JDialog{
     private JButton selecteazaAltaDataButton;
     public int id_pacient;
     public String ora;
+    public int id_programare;
 
-    public AdaugaProgramOra(JFrame parent, int id_specializare, int id_medic,int id_pacient, Date date) throws SQLException {
+    public AdaugaProgramOra(JFrame parent, int id_specializare, int id_medic,int id_pacient, Date date, int id_programare) throws SQLException {
         super(parent);
         this.specializare=id_specializare;
         this.id_medic = id_medic;
         this.date = date;
         this.id_pacient = id_pacient;
+        this.id_programare = id_programare;
         setTitle("Create medic account");
         setContentPane(ProgramPanel);
         setMaximumSize(new Dimension(450, 474));
@@ -44,40 +46,115 @@ public class AdaugaProgramOra extends JDialog{
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if (id_programare != 0) {
 
-        selecteazaAltaDataButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    dispose();
-                    AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient ,id_medic);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
-        submit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                try {
-                    Programari programari = addProgramare();
-                    if(programari != null){
-                        JOptionPane.showMessageDialog(parent, "Programare salvata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
+            Programari prog = new Programari();
+            prog = prog.selectProgById(id_programare);
+            comboBox.setSelectedItem(prog.ora);
+            selecteazaAltaDataButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
                         dispose();
+                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient ,id_medic, id_programare);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
                     }
-                    else{
-                        JOptionPane.showMessageDialog(parent,
-                                "Programarea nu s-a putut salva!" ,
-                                "Mai incearca",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
                 }
-            }
-        });
+            });
+            submit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                    try {
+                        Programari programari = updateProgramare();
+                        if(programari != null){
+                            JOptionPane.showMessageDialog(parent, "Programare modificata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
+                            dispose();
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(parent,
+                                    "Programarea nu s-a putut modifica!" ,
+                                    "Mai incearca",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        } else if ( id_programare == 0){
+
+            selecteazaAltaDataButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        dispose();
+                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient ,id_medic, 0);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+            submit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                    try {
+                        Programari programari = addProgramare();
+                        if(programari != null){
+                            JOptionPane.showMessageDialog(parent, "Programare salvata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
+                            dispose();
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(parent,
+                                    "Programarea nu s-a putut salva!" ,
+                                    "Mai incearca",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        }
+
         setVisible(true);
+    }
+
+    public Programari updateProgramare() throws SQLException {
+
+        Programari prog = null;
+
+        DB connection = new DB();
+        Connection conn = connection.getCon();
+        String sql ="UPDATE PROGRAMARI SET ID_MEDIC =?, ID_PACIENT= ? , DATA=?, ORA=? WHERE ID =?";
+        CallableStatement callableStatement = conn.prepareCall(sql);
+        callableStatement.setInt(1, id_medic);
+        callableStatement.setInt(2, id_medic);
+        callableStatement.setDate(3, new java.sql.Date(date.getTime()));
+        callableStatement.setString(4, getOra());
+        callableStatement.setInt(5,id_programare);
+
+        callableStatement.execute();
+
+
+        if (id_programare > 0) {
+            prog = new Programari();
+            prog.id = id_programare;
+            prog.id_medic = id_medic;
+            prog.id_pacient = id_pacient;
+            prog.date = date;
+            prog.ora = ora;
+
+        } else {
+            throw new SQLException("Failed to retrieve the last inserted ID.");
+        }
+
+        callableStatement.close();
+
+        conn.close();
+        return prog;
     }
     public Programari addProgramare() throws SQLException {
 
@@ -247,6 +324,6 @@ public class AdaugaProgramOra extends JDialog{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AdaugaProgramOra adaugaProgramOra= new AdaugaProgramOra(null, 4, 1, 1, data);
+        AdaugaProgramOra adaugaProgramOra= new AdaugaProgramOra(null, 4, 1, 1, data, 1);
     }
 }
