@@ -22,12 +22,16 @@ public class PacientDashboard extends JDialog{
         super(parent);
         this.user_id = user_id;
         setTitle("Login");
+        panel1.setLayout(new BorderLayout());
         JScrollPane mainScrollPane = new JScrollPane(panel1);
         mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setContentPane(mainScrollPane);
         setMaximumSize(new Dimension(450, 474));
         setSize(700, 650);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         Pacienti pacient = selectPacient(user_id);
         this.pacient_id = pacient.id;
@@ -54,13 +58,18 @@ public class PacientDashboard extends JDialog{
             }
         });
 
-
         cencel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
+
+        bottomPanel.add(addProgramare);
+        bottomPanel.add(cencel);
+
+        panel1.add(bottomPanel, BorderLayout.SOUTH);
+
         setVisible(true);
     }
 
@@ -75,7 +84,7 @@ public class PacientDashboard extends JDialog{
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            JTextArea resultPanel = new JTextArea();
+            JPanel resultPanel = new JPanel();
             resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
 
 
@@ -136,10 +145,7 @@ public class PacientDashboard extends JDialog{
 
             }
             JScrollPane scrollPane = new JScrollPane(resultPanel);
-            panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
-            panel1.add(scrollPane);
-            textProgramari.setLayout(new BorderLayout());
-            textProgramari.add(scrollPane, BorderLayout.CENTER);
+            panel1.add(scrollPane, BorderLayout.CENTER);
 
             resultSet.close();
             stmt.close();

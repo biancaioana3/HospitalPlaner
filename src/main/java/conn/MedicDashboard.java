@@ -1,12 +1,11 @@
 package conn;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class MedicDashboard extends JDialog{
+public class MedicDashboard extends JDialog {
     private JPanel panel1;
     private JLabel numeMedic;
     private JLabel specializare;
@@ -16,7 +15,7 @@ public class MedicDashboard extends JDialog{
     public int user_id;
     public int medic_id;
 
-    public MedicDashboard(JDialog parent, int user_id){
+    public MedicDashboard(JDialog parent, int user_id) {
         super(parent);
         this.user_id = user_id;
         setTitle("Login");
@@ -49,7 +48,6 @@ public class MedicDashboard extends JDialog{
         });
 
         setVisible(true);
-
     }
 
     private void pacientSelect() {
@@ -63,11 +61,10 @@ public class MedicDashboard extends JDialog{
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            JTextArea resultPanel = new JTextArea();
+            JPanel resultPanel = new JPanel();
             resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
 
-
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 int id_pacient = resultSet.getInt("id_pacient");
                 String ora = resultSet.getString("ora");
@@ -77,16 +74,12 @@ public class MedicDashboard extends JDialog{
                 String resultRow = "Nume: " + pacient.nume +
                         " Prenume: " + pacient.prenume +
                         " Telefon: " + pacient.telefon + "\n" +
-                        " Ora: " + ora  +
+                        " Ora: " + ora +
                         " Data: " + data + "\n\n";
-                JTextArea resultLabel = new JTextArea(resultRow);
-
+                JLabel resultLabel = new JLabel(resultRow);
 
                 JButton fisaPacientButton = new JButton("Fisa pacient");
-                fisaPacientButton.setPreferredSize(new Dimension(150, 20)); // setarea dimensiunii personalizate
-
-                JButton updateProgramare = new JButton("Modifica programarea");
-                updateProgramare.setPreferredSize(new Dimension(200, 20)); // setarea dimensiunii personalizate
+                fisaPacientButton.setPreferredSize(new Dimension(150, 20));
 
                 fisaPacientButton.addActionListener(new ActionListener() {
                     @Override
@@ -95,41 +88,34 @@ public class MedicDashboard extends JDialog{
                     }
                 });
 
-                updateProgramare.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.out.println("Upadate programare: " + id_pacient);
-                    }
-                });
                 JPanel buttonsPanel = new JPanel();
                 buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
                 buttonsPanel.add(fisaPacientButton);
-                buttonsPanel.add(updateProgramare);
 
                 JPanel rowPanel = new JPanel(new BorderLayout());
                 rowPanel.add(resultLabel, BorderLayout.WEST);
                 rowPanel.add(buttonsPanel, BorderLayout.EAST);
 
-
                 resultPanel.add(rowPanel);
-
             }
+
             JScrollPane scrollPane = new JScrollPane(resultPanel);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
             textPacient.setLayout(new BorderLayout());
             textPacient.add(scrollPane, BorderLayout.CENTER);
 
             resultSet.close();
             stmt.close();
             conn.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
     Medici medic = new Medici();
-    public Medici selectMedici(int user_id){
+
+    public Medici selectMedici(int user_id) {
         Medici medic = new Medici();
 
         try {
@@ -142,7 +128,7 @@ public class MedicDashboard extends JDialog{
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 medic = new Medici();
                 medic.specializare = medic.getMedicSpecializare(resultSet.getInt("id_sectie"));
                 medic.id_user = resultSet.getInt("id_user");
@@ -153,13 +139,11 @@ public class MedicDashboard extends JDialog{
             }
             stmt.close();
             conn.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return medic;
     }
-
 
     public static void main(String[] args) {
         MedicDashboard medicDashboard = new MedicDashboard(null, 1);
