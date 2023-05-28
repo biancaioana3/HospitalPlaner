@@ -10,18 +10,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class PacientRegister extends JDialog{
+public class PatientRegister extends JDialog{
     public int id;
-    public Pacienti pacienti;
+    public Patients patients;
     private JPanel panel1;
     private JTextField JtAdresa;
     private JDateChooser JtDataNasteri;
     private JSpinner JsVarsta;
     private JComboBox JcGen;
     private JButton JbSave;
+    private JPanel patientRegister;
     private JPanel pacientRegister;
 
-    public PacientRegister(JFrame parent, int id){
+    public PatientRegister(JFrame parent, int id){
         super(parent);
         this.id = id;
         setTitle("Create new account");
@@ -52,15 +53,15 @@ public class PacientRegister extends JDialog{
         Date datanasterii = JtDataNasteri.getDate();
         int gen = JcGen.getSelectedIndex();
 
-        pacienti = addPacientToDB(adresa,varsta,datanasterii,gen);
+        patients = addPacientToDB(adresa,varsta,datanasterii,gen);
 
         if(adresa.isEmpty() || varsta <= 0  || gen < 0){
             JOptionPane.showMessageDialog(this, "Te rugam completeaza toate campurile!", "Mai incearca o data!", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if(pacienti != null){
-            System.out.println(pacienti);
+        if(patients != null){
+            System.out.println(patients);
             dispose();
         }
         else{
@@ -68,9 +69,9 @@ public class PacientRegister extends JDialog{
         }
     }
 
-    private Pacienti addPacientToDB(String adresa, int varsta, Date datanasterii,int gen) throws SQLException {
+    private Patients addPacientToDB(String adresa, int varsta, Date datanasterii, int gen) throws SQLException {
 
-        Pacienti pacient = null;
+        Patients pacient = null;
 
         DB connection = new DB();
         Connection conn = connection.getCon();
@@ -86,11 +87,11 @@ public class PacientRegister extends JDialog{
         callableStatement.execute();
 
 
-        Pacienti pacientDate = new Pacienti();
-        int id_pacient = Integer.parseInt(pacientDate.selectPacientDyUserId(id, "id"));
+        Patients pacientDate = new Patients();
+        int id_pacient = Integer.parseInt(pacientDate.selectPatienttDyUserId(id, "id"));
 
         if (id_pacient > 0) {
-            pacient = new Pacienti();
+            pacient = new Patients();
             pacient.id = id_pacient;
             pacient.adresa = adresa;
             pacient.varsta = varsta;
@@ -107,6 +108,6 @@ public class PacientRegister extends JDialog{
     }
 
     public static void main(String[] args) {
-        PacientRegister pacient = new PacientRegister(null, 14);
+        PatientRegister pacient = new PatientRegister(null, 14);
     }
 }

@@ -136,9 +136,9 @@ public class RegisterForm  extends JDialog{
         if(user != null){
             if(user.isMedic == 1){
                 System.out.println(user.id);
-                MedicRegister medicRegister = new MedicRegister(null, user.id);
+                DoctorRegister doctorRegister = new DoctorRegister(null, user.id);
             }else if(user.isMedic == 0){
-                PacientRegister pacientRegister = new PacientRegister(null, user.id);
+                PatientRegister patientRegister = new PatientRegister(null, user.id);
             }
             System.out.println("Successful registration of: "+ user.nume);
         } else{

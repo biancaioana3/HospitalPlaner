@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class AdaugaProgramareMedic extends JDialog{
+public class AddDoctorsAppointment extends JDialog{
     private JComboBox<String> comboBox;
     private JPanel panel1;
     private JPanel addProgPanel;
@@ -14,7 +14,7 @@ public class AdaugaProgramareMedic extends JDialog{
     public int specializare;
     public int id_pacient;
     public int id_programare;
-    public AdaugaProgramareMedic(JFrame parent, int id_specializare, int id_pacient, int id_programare) throws SQLException {
+    public AddDoctorsAppointment(JFrame parent, int id_specializare, int id_pacient, int id_programare) throws SQLException {
         super(parent);
         this.specializare=id_specializare;
         this.id_pacient = id_pacient;
@@ -32,10 +32,10 @@ public class AdaugaProgramareMedic extends JDialog{
         addProgPanel.add(submit);
 
         if(id_programare != 0){
-            Programari prog = new Programari();
-            prog = prog.selectProgById(id_programare);
-            Medici medic = new Medici();
-            medic = medic.selectMedicById(prog.id_medic);
+            Appointments prog = new Appointments();
+            prog = prog.selectAppointmentById(id_programare);
+            Doctors medic = new Doctors();
+            medic = medic.selectDoctorById(prog.id_medic);
 
             comboBox.setSelectedItem(medic.nume);
             submit.addActionListener(new ActionListener() {
@@ -43,7 +43,7 @@ public class AdaugaProgramareMedic extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient, getMedic(), id_programare);
+                        AddDayProgramming addDayProgramming = new AddDayProgramming(null, id_specializare,id_pacient, getMedic(), id_programare);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -56,7 +56,7 @@ public class AdaugaProgramareMedic extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient, getMedic(),0);
+                        AddDayProgramming addDayProgramming = new AddDayProgramming(null, id_specializare,id_pacient, getMedic(),0);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -119,6 +119,6 @@ public class AdaugaProgramareMedic extends JDialog{
     }
 
     public static void main(String[] args) throws SQLException {
-        AdaugaProgramareMedic adaugaProgramareMedic = new AdaugaProgramareMedic(null, 4, 1, 1);
+        AddDoctorsAppointment addDoctorsAppointment = new AddDoctorsAppointment(null, 4, 1, 1);
     }
 }

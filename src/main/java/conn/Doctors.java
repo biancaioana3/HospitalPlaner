@@ -2,7 +2,7 @@ package conn;
 
 import java.sql.*;
 
-public class Medici {
+public class Doctors {
 
     public int id;
     public String specializare;
@@ -33,7 +33,7 @@ public class Medici {
         Connection connection = conn.getCon();
         try (connection;
              Statement statement = connection.createStatement()) {
-        String script="create table medici ( \n" +
+        String script="create table doctors ( \n" +
                 "id NUMBER(5) PRIMARY KEY, \n" +
                 "nume VARCHAR2(25), \n" +
                 "prenume VARCHAR2(25), \n" +
@@ -71,7 +71,7 @@ public class Medici {
         }
     }
 
-    public String selectMedicDyUserId(int id , String columnName) throws SQLException {
+    public String selectDoctorByUserId(int id , String columnName) throws SQLException {
         DB conn = new DB();
         Connection connection = conn.getCon();
 
@@ -88,8 +88,8 @@ public class Medici {
         return "SELECT ERROR!";
     }
 
-    public Medici selectMedicById(int id) throws SQLException {
-        Medici medic = new Medici();
+    public Doctors selectDoctorById(int id) throws SQLException {
+        Doctors medic = new Doctors();
         DB conn = new DB();
         Connection connection = conn.getCon();
 
@@ -103,15 +103,15 @@ public class Medici {
             medic.id = resultSet.getInt("id");
             medic.nume = resultSet.getString("nume");
             medic.prenume = resultSet.getString("prenume");
-            medic.specializare = getMedicSpecializare(resultSet.getInt("id_sectie"));
+            medic.specializare = getDoctorSpecialization(resultSet.getInt("id_sectie"));
             medic.id_user = resultSet.getInt("id_user");
             medic.telefon = resultSet.getString("telefon");
         }
 
         return medic;
     }
-    Sectii sectie = new Sectii();
-    public String getMedicSpecializare(int id) {
+    Specialization sectie = new Specialization();
+    public String getDoctorSpecialization(int id) {
         String specializare = " ";
         try {
             DB con = new DB();
@@ -124,7 +124,7 @@ public class Medici {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()){
-                sectie = new Sectii();
+                sectie = new Specialization();
                 sectie.nume = resultSet.getString("nume");
             }
             specializare = sectie.nume;
@@ -136,15 +136,15 @@ public class Medici {
         }
         return specializare;
     }
-    public void createMedici(){
+    public void createDoctor(){
         createSequens();
         createTable();
         createTrigger();
     }
 
     public static void main(String[] args) {
-        Medici medici = new Medici();
-        medici.createMedici();
+        Doctors doctors = new Doctors();
+        doctors.createDoctor();
 
 
     }

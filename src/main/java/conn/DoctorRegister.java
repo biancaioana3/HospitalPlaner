@@ -4,10 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
-public class MedicRegister extends JDialog {
+public class DoctorRegister extends JDialog {
     public int id;
     private JComboBox<String> luni;
     private JComboBox<String> marti;
@@ -17,9 +15,9 @@ public class MedicRegister extends JDialog {
     private JPanel registerPanel;
     private JButton submit;
     private JComboBox<String> comboBox;
-    public Medici medici;
+    public Doctors doctors;
 
-    public MedicRegister(JFrame parent, int id) throws SQLException {
+    public DoctorRegister(JFrame parent, int id) throws SQLException {
         super(parent);
         this.id=id;
         setTitle("Create medic account");
@@ -74,15 +72,15 @@ public class MedicRegister extends JDialog {
         int pJoi = joi.getSelectedIndex();
         int pVineri = vineri.getSelectedIndex();
 
-        medici = addMedicToDB(specializare,pLuni,pMarti,pMiercuri,pJoi, pVineri);
+        doctors = addMedicToDB(specializare,pLuni,pMarti,pMiercuri,pJoi, pVineri);
 
         if(pLuni == 0 || pMarti == 0 || pMiercuri == 0 || pJoi == 0 || pVineri == 0 ){
             JOptionPane.showMessageDialog(this, "Te rugam completeaza toate campurile!", "Mai incearca o data!", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if(medici != null){
-            System.out.println(medici);
+        if(doctors != null){
+            System.out.println(doctors);
             dispose();
         }
         else{
@@ -90,9 +88,9 @@ public class MedicRegister extends JDialog {
         }
     }
 
-    private Medici addMedicToDB(int specializare, int pLuni, int pMarti, int pMiercuri, int pJoi, int pVineri) throws SQLException {
+    private Doctors addMedicToDB(int specializare, int pLuni, int pMarti, int pMiercuri, int pJoi, int pVineri) throws SQLException {
 
-        Medici medici = null;
+        Doctors doctors = null;
 
         DB connection = new DB();
         Connection conn = connection.getCon();
@@ -104,18 +102,18 @@ public class MedicRegister extends JDialog {
         callableStatement.execute();
 
 
-        Medici medicDate = new Medici();
-        int idmedic = Integer.parseInt(medicDate.selectMedicDyUserId(id, "id"));
+        Doctors medicDate = new Doctors();
+        int idmedic = Integer.parseInt(medicDate.selectDoctorByUserId(id, "id"));
 
         if (idmedic > 0) {
-            medici = new Medici();
-            medici.id = idmedic;
-            medici.specializare =medici.getMedicSpecializare(specializare);
-            medici.luni = pLuni;
-            medici.marti = pMarti;
-            medici.miercuri = pMiercuri;
-            medici.joi = pJoi;
-            medici.vineri = pVineri;
+            doctors = new Doctors();
+            doctors.id = idmedic;
+            doctors.specializare = doctors.getDoctorSpecialization(specializare);
+            doctors.luni = pLuni;
+            doctors.marti = pMarti;
+            doctors.miercuri = pMiercuri;
+            doctors.joi = pJoi;
+            doctors.vineri = pVineri;
         } else {
             throw new SQLException("Failed to retrieve the last inserted ID.");
         }
@@ -136,7 +134,7 @@ public class MedicRegister extends JDialog {
 
         callableStatementProgram.close();
         conn.close();
-        return medici;
+        return doctors;
     }
 
     private JPanel createComboBoxPanel(String labelText, JComboBox<String> comboBox) {
@@ -177,6 +175,6 @@ public class MedicRegister extends JDialog {
     }
 
     public static void main(String[] args) throws SQLException {
-        MedicRegister medicRegister = new MedicRegister(null, 14);
+        DoctorRegister doctorRegister = new DoctorRegister(null, 14);
     }
 }

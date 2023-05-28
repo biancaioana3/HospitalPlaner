@@ -99,9 +99,9 @@ public class LoginForm extends JDialog{
             System.out.println("Telefon: " + user.telefon);
 
             if(user.isMedic == 1){
-                MedicDashboard medicDashboard = new MedicDashboard(null, user.id);
+                DoctorDashboard doctorDashboard = new DoctorDashboard(null, user.id);
             }else if (user.isMedic == 0){
-                PacientDashboard pacientDashboard = new PacientDashboard(null, user.id);
+                PatientDashboard patientDashboard = new PatientDashboard(null, user.id);
             }
 
         }else{

@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class AdaugaProgramOra extends JDialog{
+public class AddScheduleTime extends JDialog{
     private JComboBox<String> comboBox;
     public int specializare;
     public int id_medic;
@@ -24,7 +24,7 @@ public class AdaugaProgramOra extends JDialog{
     public String ora;
     public int id_programare;
 
-    public AdaugaProgramOra(JFrame parent, int id_specializare, int id_medic,int id_pacient, Date date, int id_programare) throws SQLException {
+    public AddScheduleTime(JFrame parent, int id_specializare, int id_medic, int id_pacient, Date date, int id_programare) throws SQLException {
         super(parent);
         this.specializare=id_specializare;
         this.id_medic = id_medic;
@@ -48,15 +48,15 @@ public class AdaugaProgramOra extends JDialog{
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         if (id_programare != 0) {
 
-            Programari prog = new Programari();
-            prog = prog.selectProgById(id_programare);
+            Appointments prog = new Appointments();
+            prog = prog.selectAppointmentById(id_programare);
             comboBox.setSelectedItem(prog.ora);
             selecteazaAltaDataButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient ,id_medic, id_programare);
+                        AddDayProgramming addDayProgramming = new AddDayProgramming(null, id_specializare,id_pacient ,id_medic, id_programare);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -67,8 +67,8 @@ public class AdaugaProgramOra extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                     try {
-                        Programari programari = updateProgramare();
-                        if(programari != null){
+                        Appointments appointments = updateProgramare();
+                        if(appointments != null){
                             JOptionPane.showMessageDialog(parent, "Programare modificata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         }
@@ -90,7 +90,7 @@ public class AdaugaProgramOra extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareZi adaugaProgramareZi = new AdaugaProgramareZi(null, id_specializare,id_pacient ,id_medic, 0);
+                        AddDayProgramming addDayProgramming = new AddDayProgramming(null, id_specializare,id_pacient ,id_medic, 0);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -101,8 +101,8 @@ public class AdaugaProgramOra extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     dispose();
                     try {
-                        Programari programari = addProgramare();
-                        if(programari != null){
+                        Appointments appointments = addProgramare();
+                        if(appointments != null){
                             JOptionPane.showMessageDialog(parent, "Programare salvata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         }
@@ -122,9 +122,9 @@ public class AdaugaProgramOra extends JDialog{
         setVisible(true);
     }
 
-    public Programari updateProgramare() throws SQLException {
+    public Appointments updateProgramare() throws SQLException {
 
-        Programari prog = null;
+        Appointments prog = null;
 
         DB connection = new DB();
         Connection conn = connection.getCon();
@@ -140,7 +140,7 @@ public class AdaugaProgramOra extends JDialog{
 
 
         if (id_programare > 0) {
-            prog = new Programari();
+            prog = new Appointments();
             prog.id = id_programare;
             prog.id_medic = id_medic;
             prog.id_pacient = id_pacient;
@@ -156,9 +156,9 @@ public class AdaugaProgramOra extends JDialog{
         conn.close();
         return prog;
     }
-    public Programari addProgramare() throws SQLException {
+    public Appointments addProgramare() throws SQLException {
 
-        Programari programari = null;
+        Appointments appointments = null;
 
         DB connection = new DB();
         Connection conn = connection.getCon();
@@ -183,19 +183,19 @@ public class AdaugaProgramOra extends JDialog{
         int lastInsertId = callableStatement.getInt(5);
 
         if (lastInsertId > 0) {
-            programari = new Programari();
-            programari.id = lastInsertId;
-            programari.id_medic = id_medic;
-            programari.id_pacient = id_pacient;
-            programari.date = date;
-            programari.ora = ora;
+            appointments = new Appointments();
+            appointments.id = lastInsertId;
+            appointments.id_medic = id_medic;
+            appointments.id_pacient = id_pacient;
+            appointments.date = date;
+            appointments.ora = ora;
         } else {
             throw new SQLException("Failed to retrieve the last inserted ID.");
         }
 
         callableStatement.close();
         conn.close();
-        return programari;
+        return appointments;
     }
     private String getOra() throws SQLException {
         this.ora = (String) comboBox.getSelectedItem();
@@ -251,7 +251,7 @@ public class AdaugaProgramOra extends JDialog{
         Statement statement = null;
         ResultSet resultSet = null;
         comboBox = new JComboBox<>();
-        Medici medic = new Medici();
+        Doctors medic = new Doctors();
         String ziuaSaptamanii;
         int program = 0;
 
@@ -324,6 +324,6 @@ public class AdaugaProgramOra extends JDialog{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AdaugaProgramOra adaugaProgramOra= new AdaugaProgramOra(null, 4, 1, 1, data, 1);
+        AddScheduleTime addScheduleTime = new AddScheduleTime(null, 4, 1, 1, data, 1);
     }
 }

@@ -3,7 +3,7 @@ package conn;
 import java.sql.*;
 import java.util.Date;
 
-public class Programari {
+public class Appointments {
     public int id;
     public int id_medic;
     public int id_pacient;
@@ -34,8 +34,8 @@ public class Programari {
                     "ora VARCHAR(8),\n" +
                     "created_at DATE DEFAULT SYSDATE,\n" +
                     "updated_at DATE DEFAULT SYSDATE,\n" +
-                    "FOREIGN KEY (id_medic) REFERENCES medici(id),\n" +
-                    "FOREIGN KEY (id_pacient) REFERENCES pacienti(id)\n" +
+                    "FOREIGN KEY (id_medic) REFERENCES doctors(id),\n" +
+                    "FOREIGN KEY (id_pacient) REFERENCES patients(id)\n" +
                     ")";
             statement.executeUpdate(script);
             System.out.println("Script executed successfully.");
@@ -61,8 +61,8 @@ public class Programari {
             System.err.println("Error executing script: " + e.getErrorCode() + " - " + e.getMessage());
         }
     }
-    public Programari selectProgById(int id) throws SQLException {
-        Programari prog = new Programari();
+    public Appointments selectAppointmentById(int id) throws SQLException {
+        Appointments prog = new Appointments();
         DB conn = new DB();
         Connection connection = conn.getCon();
 
@@ -82,14 +82,14 @@ public class Programari {
 
         return prog;
     }
-    public Programari(){
+    public Appointments(){
         createSequens();
         createTable();
         createTrigger();
     }
 
     public static void main(String[] args) {
-        Programari programari = new Programari();
+        Appointments appointments = new Appointments();
 
     }
 }

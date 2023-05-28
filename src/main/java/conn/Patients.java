@@ -2,7 +2,7 @@ package conn;
 
 import java.sql.*;
 
-public class Pacienti {
+public class Patients {
     public int id;
     public String adresa;
     public int varsta;
@@ -29,7 +29,7 @@ public class Pacienti {
         Connection connection = conn.getCon();
         try (connection;
              Statement statement = connection.createStatement()) {
-            String script="create table pacienti ( \n" +
+            String script="create table patients ( \n" +
                     "id NUMBER(5) PRIMARY KEY,\n" +
                     "nume VARCHAR(25),\n" +
                     "prenume VARCHAR2(25), \n" +
@@ -67,7 +67,7 @@ public class Pacienti {
             System.err.println("Error executing script: " + e.getErrorCode() + " - " + e.getMessage());
         }
     }
-    public String selectPacientDyUserId(int id , String columnName) throws SQLException {
+    public String selectPatienttDyUserId(int id , String columnName) throws SQLException {
         DB conn = new DB();
         Connection connection = conn.getCon();
 
@@ -83,8 +83,8 @@ public class Pacienti {
 
         return "SELECT ERROR!";
     }
-    public Pacienti selectPacientById(int id) throws SQLException {
-        Pacienti pacienti = new Pacienti();
+    public Patients selectPatientById(int id) throws SQLException {
+        Patients patients = new Patients();
         DB conn = new DB();
         Connection connection = conn.getCon();
 
@@ -95,28 +95,29 @@ public class Pacienti {
         stmt.setInt(1, id);
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            pacienti.id = resultSet.getInt("id");
-            pacienti.nume = resultSet.getString("nume");
-            pacienti.prenume = resultSet.getString("prenume");
-            pacienti.adresa = resultSet.getString("adresa");
-            pacienti.datanasterii = resultSet.getDate("data_nasterii");
-            pacienti.varsta = resultSet.getInt("varsta");
-            pacienti.gen = resultSet.getInt("gen");
-            pacienti.id_user = resultSet.getInt("id_user");
-            pacienti.telefon = resultSet.getString("telefon");
+            patients.id = resultSet.getInt("id");
+            patients.nume = resultSet.getString("nume");
+            patients.prenume = resultSet.getString("prenume");
+            patients.adresa = resultSet.getString("adresa");
+            patients.datanasterii = resultSet.getDate("data_nasterii");
+            patients.varsta = resultSet.getInt("varsta");
+            patients.gen = resultSet.getInt("gen");
+            patients.id_user = resultSet.getInt("id_user");
+            patients.telefon = resultSet.getString("telefon");
         }
 
-        return pacienti;
+        return patients;
     }
-    public void createPacienti(){
+    public void createPatient(){
         createSequens();
         createTable();
+
         createTrigger();
     }
 
     public static void main(String[] args) {
-        Pacienti pacienti = new Pacienti();
-        pacienti.createPacienti();
+        Patients patients = new Patients();
+        patients.createPatient();
 
     }
 }

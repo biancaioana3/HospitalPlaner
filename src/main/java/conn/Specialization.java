@@ -1,6 +1,6 @@
 package conn;
 
-public class Sectii {
+public class Specialization {
    String nume;
    int id;
 

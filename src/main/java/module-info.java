@@ -13,6 +13,8 @@ module com.example.hospitalplaner {
     requires java.sql;
     requires java.desktop;
     requires jcalendar;
+    requires org.apache.pdfbox;
+    requires log4j;
 
     opens com.example.hospitalplaner to javafx.fxml;
     exports com.example.hospitalplaner;

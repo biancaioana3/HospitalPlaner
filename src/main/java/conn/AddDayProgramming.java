@@ -3,8 +3,6 @@ package conn;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AdaugaProgramareZi extends JDialog{
+public class AddDayProgramming extends JDialog{
     private JPanel dataPanel;
     private JButton submit;
     private JDateChooser JtData;
@@ -22,7 +20,7 @@ public class AdaugaProgramareZi extends JDialog{
     public Date data;
     public int id_pacient;
     public int id_programare;
-    public AdaugaProgramareZi(JFrame parent, int id_specializare,int id_pacient,int id_medic, int id_programare) throws SQLException {
+    public AddDayProgramming(JFrame parent, int id_specializare, int id_pacient, int id_medic, int id_programare) throws SQLException {
         super(parent);
         this.specializare=id_specializare;
         this.id_medic = id_medic;
@@ -45,15 +43,15 @@ public class AdaugaProgramareZi extends JDialog{
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         if(id_programare != 0){
-            Programari prog = new Programari();
-            prog = prog.selectProgById(id_programare);
+            Appointments prog = new Appointments();
+            prog = prog.selectAppointmentById(id_programare);
             JtData.setDate(prog.date);
             submit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramOra adaugaProgramOra = new AdaugaProgramOra(null, id_specializare, id_medic,id_pacient, getData(), id_programare);
+                        AddScheduleTime addScheduleTime = new AddScheduleTime(null, id_specializare, id_medic,id_pacient, getData(), id_programare);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -65,7 +63,7 @@ public class AdaugaProgramareZi extends JDialog{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramOra adaugaProgramOra = new AdaugaProgramOra(null, id_specializare, id_medic,id_pacient, getData(), 0);
+                        AddScheduleTime addScheduleTime = new AddScheduleTime(null, id_specializare, id_medic,id_pacient, getData(), 0);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -94,6 +92,6 @@ public class AdaugaProgramareZi extends JDialog{
 
 
     public static void main(String[] args) throws SQLException {
-        AdaugaProgramareZi adaugaProgramareMedic = new AdaugaProgramareZi(null, 4, 1,1,1);
+        AddDayProgramming adaugaProgramareMedic = new AddDayProgramming(null, 4, 1,1,1);
     }
 }

@@ -6,19 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class PacientDashboard extends JDialog{
+public class PatientDashboard extends JDialog{
     private JScrollPane mainScrollPane;
     private JPanel  panel1;
     private JLabel nume;
     private JLabel telefon;
     private JLabel adresa;
     private JButton cencel;
+    private JButton addDocument;
     private JButton addProgramare;
     private JTextArea textProgramari;
     public int user_id;
     public int pacient_id;
 
-    public PacientDashboard(JDialog parent, int user_id){
+    public PatientDashboard(JDialog parent, int user_id){
         super(parent);
         this.user_id = user_id;
         setTitle("Login");
@@ -33,7 +34,7 @@ public class PacientDashboard extends JDialog{
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        Pacienti pacient = selectPacient(user_id);
+        Patients pacient = selectPacient(user_id);
         this.pacient_id = pacient.id;
         nume.setText(pacient.nume + " " + pacient.prenume);
         textProgramari.setEditable(false);
@@ -51,7 +52,17 @@ public class PacientDashboard extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id, 0);
+                    AddProgramming addProgramming = new AddProgramming(null,pacient_id, 0);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        addDocument.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    AddDocument document = new AddDocument(null, pacient_id);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -66,6 +77,7 @@ public class PacientDashboard extends JDialog{
         });
 
         bottomPanel.add(addProgramare);
+        bottomPanel.add(addDocument);
         bottomPanel.add(cencel);
 
         panel1.add(bottomPanel, BorderLayout.SOUTH);
@@ -92,12 +104,12 @@ public class PacientDashboard extends JDialog{
 
                 int id = resultSet.getInt("id");
                 int id_medic = resultSet.getInt("id_medic");
-                Medici medic = new Medici();
-                medic = medic.selectMedicById(id_medic);
+                Doctors medic = new Doctors();
+                medic = medic.selectDoctorById(id_medic);
                 String ora = resultSet.getString("ora");
                 Date data = resultSet.getDate("data");
-                Pacienti pacient = new Pacienti();
-                pacient = pacient.selectPacientById(pacient_id);
+                Patients pacient = new Patients();
+                pacient = pacient.selectPatientById(pacient_id);
                 String resultRow = "Nume Medic: " + medic.nume +
                         " " + medic.prenume + "\n" +
                         "Telefon: " + medic.telefon + "\n" +
@@ -125,7 +137,7 @@ public class PacientDashboard extends JDialog{
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("Upadate programare: " + id);
                         try {
-                            AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null,pacient_id, id);
+                            AddProgramming addProgramming = new AddProgramming(null,pacient_id, id);
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -155,8 +167,8 @@ public class PacientDashboard extends JDialog{
             e.printStackTrace();
         }
     }
-    public Pacienti selectPacient( int user_id){
-        Pacienti pacient = new Pacienti();
+    public Patients selectPacient(int user_id){
+        Patients pacient = new Patients();
 
         try {
             DB con = new DB();
@@ -169,7 +181,7 @@ public class PacientDashboard extends JDialog{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()){
-                pacient = new Pacienti();
+                pacient = new Patients();
                 pacient.id_user = resultSet.getInt("id_user");
                 pacient.nume = resultSet.getString("nume");
                 pacient.id = resultSet.getInt("id");
@@ -191,6 +203,6 @@ public class PacientDashboard extends JDialog{
 
 
     public static void main(String[] args) {
-        PacientDashboard pacient =  new PacientDashboard(null, 2);
+        PatientDashboard pacient =  new PatientDashboard(null, 2);
     }
 }

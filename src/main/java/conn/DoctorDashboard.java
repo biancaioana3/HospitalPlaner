@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class MedicDashboard extends JDialog {
+public class DoctorDashboard extends JDialog {
     private JPanel panel1;
     private JLabel numeMedic;
     private JLabel specializare;
@@ -15,7 +15,7 @@ public class MedicDashboard extends JDialog {
     public int user_id;
     public int medic_id;
 
-    public MedicDashboard(JDialog parent, int user_id) {
+    public DoctorDashboard(JDialog parent, int user_id) {
         super(parent);
         this.user_id = user_id;
         setTitle("Login");
@@ -23,7 +23,7 @@ public class MedicDashboard extends JDialog {
         setMaximumSize(new Dimension(450, 474));
         setSize(700, 650);
 
-        Medici medic = selectMedici(user_id);
+        Doctors medic = selectMedici(user_id);
         this.medic_id = medic.id;
         numeMedic.setText(medic.nume + " " + medic.prenume);
         String specializareMedic = medic.specializare;
@@ -69,8 +69,8 @@ public class MedicDashboard extends JDialog {
                 int id_pacient = resultSet.getInt("id_pacient");
                 String ora = resultSet.getString("ora");
                 Date data = resultSet.getDate("data");
-                Pacienti pacient = new Pacienti();
-                pacient = pacient.selectPacientById(id_pacient);
+                Patients pacient = new Patients();
+                pacient = pacient.selectPatientById(id_pacient);
                 String resultRow = "Nume: " + pacient.nume +
                         " Prenume: " + pacient.prenume +
                         " Telefon: " + pacient.telefon + "\n" +
@@ -113,10 +113,10 @@ public class MedicDashboard extends JDialog {
         }
     }
 
-    Medici medic = new Medici();
+    Doctors medic = new Doctors();
 
-    public Medici selectMedici(int user_id) {
-        Medici medic = new Medici();
+    public Doctors selectMedici(int user_id) {
+        Doctors medic = new Doctors();
 
         try {
             DB con = new DB();
@@ -129,8 +129,8 @@ public class MedicDashboard extends JDialog {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                medic = new Medici();
-                medic.specializare = medic.getMedicSpecializare(resultSet.getInt("id_sectie"));
+                medic = new Doctors();
+                medic.specializare = medic.getDoctorSpecialization(resultSet.getInt("id_sectie"));
                 medic.id_user = resultSet.getInt("id_user");
                 medic.nume = resultSet.getString("nume");
                 medic.id = resultSet.getInt("id");
@@ -146,6 +146,6 @@ public class MedicDashboard extends JDialog {
     }
 
     public static void main(String[] args) {
-        MedicDashboard medicDashboard = new MedicDashboard(null, 1);
+        DoctorDashboard doctorDashboard = new DoctorDashboard(null, 1);
     }
 }

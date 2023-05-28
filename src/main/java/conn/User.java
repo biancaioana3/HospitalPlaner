@@ -78,7 +78,7 @@ public class User {
                             "FOR EACH ROW\n" +
                             "BEGIN\n" +
                             "  IF (:NEW.is_medic = 1) THEN\n" +
-                            "  INSERT INTO medici (id_user, nume, prenume, telefon)\n" +
+                            "  INSERT INTO doctors (id_user, nume, prenume, telefon)\n" +
                             "  VALUES (:NEW.id, :NEW.nume, :NEW.prenume, :NEW.telefon);\n" +
                             "  END IF;\n" +
                             "END;";
@@ -100,7 +100,7 @@ public class User {
                             "FOR EACH ROW\n" +
                             "BEGIN\n" +
                             "  IF (:NEW.is_medic = 0) THEN\n" +
-                            "  INSERT INTO pacienti (id_user, nume, prenume, telefon)\n" +
+                            "  INSERT INTO patients (id_user, nume, prenume, telefon)\n" +
                             "  VALUES (:NEW.id, :NEW.nume, :NEW.prenume, :NEW.telefon);\n" +
                             "  END IF;\n" +
                             "END;";

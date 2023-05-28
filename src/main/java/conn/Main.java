@@ -6,6 +6,6 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
         DB conn =  new DB();
-        Medici medic = new Medici();
+        Doctors medic = new Doctors();
     }
 }

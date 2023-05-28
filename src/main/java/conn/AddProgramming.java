@@ -6,17 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class AdaugaProgramare extends JDialog {
+public class AddProgramming extends JDialog {
     private JComboBox<String> comboBox;
     private JPanel panel1;
     private JPanel addProgPanel;
     private JButton submit;
     private JButton cencel;
-    public int id_pacient;
+    public int id_patient;
+
     public int id_programare;
-    public AdaugaProgramare(JFrame parent, int id_pacient, int id_programare) throws SQLException {
+    public AddProgramming(JFrame parent, int id_patient, int id_programare) throws SQLException {
         super(parent);
-        this.id_pacient=id_pacient;
+        this.id_patient=id_patient;
         this.id_programare = id_programare;
         setTitle("Programare");
         setContentPane(addProgPanel);
@@ -25,23 +26,23 @@ public class AdaugaProgramare extends JDialog {
 
         addProgPanel.setLayout(new BoxLayout(addProgPanel, BoxLayout.Y_AXIS));
 
-        JPanel comboBoxPanel = createComboBoxPanel("Specializare", SpecializariComboBox());
+        JPanel comboBoxPanel = createComboBoxPanel("Specializare", SpecializationsComboBox());
         addProgPanel.add(comboBoxPanel);
 
         addProgPanel.add(submit);
         addProgPanel.add(cencel);
 
         if(id_programare != 0){
-            Programari prog = new Programari();
-            prog.selectProgById(id_programare);
-            comboBox.setSelectedItem(getSpecializareByIdProgramare());
+            Appointments prog = new Appointments();
+            prog.selectAppointmentById(id_programare);
+            comboBox.setSelectedItem(getSpecializationByIdProgramming());
 
             submit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareMedic adaugaProgramareMedic = new AdaugaProgramareMedic(null, getSpecializare(), id_pacient, id_programare);
+                        AddDoctorsAppointment addDoctorsAppointment = new AddDoctorsAppointment(null, getSpecialization(), id_patient, id_programare);
 
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
@@ -54,7 +55,7 @@ public class AdaugaProgramare extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         dispose();
-                        AdaugaProgramareMedic adaugaProgramareMedic = new AdaugaProgramareMedic(null, getSpecializare(), id_pacient, 0);
+                        AddDoctorsAppointment addDoctorsAppointment = new AddDoctorsAppointment(null, getSpecialization(), id_patient, 0);
 
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
@@ -77,7 +78,7 @@ public class AdaugaProgramare extends JDialog {
         });
         setVisible(true);
     }
-    private String getSpecializareByIdProgramare() throws SQLException {
+    private String getSpecializationByIdProgramming() throws SQLException {
         DB con = new DB();
         String nume = null;
         Connection conn = con.getCon();
@@ -98,7 +99,7 @@ public class AdaugaProgramare extends JDialog {
         return nume;
     }
 
-    private int getSpecializare() throws SQLException {
+    private int getSpecialization() throws SQLException {
         int specializare = comboBox.getSelectedIndex() +1;
         return  specializare;
     }
@@ -111,7 +112,7 @@ public class AdaugaProgramare extends JDialog {
         panel.add(comboBox);
         return panel;
     }
-    public JComboBox<String> SpecializariComboBox() throws SQLException {
+    public JComboBox<String> SpecializationsComboBox() throws SQLException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -141,6 +142,6 @@ public class AdaugaProgramare extends JDialog {
     }
 
     public static void main(String[] args) throws SQLException {
-        AdaugaProgramare adaugaProgramare = new AdaugaProgramare(null, 1,1);
+        AddProgramming addProgramming = new AddProgramming(null, 1,1);
     }
 }
