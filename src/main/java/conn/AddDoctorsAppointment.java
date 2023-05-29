@@ -1,5 +1,7 @@
 package conn;
 
+import org.controlsfx.control.PropertySheet;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -73,9 +75,29 @@ public class AddDoctorsAppointment extends JDialog{
     }
 
     private int getMedic() throws SQLException {
-        int medic_id = comboBox.getSelectedIndex() +1;
-        return  medic_id;
+        String medic = (String) comboBox.getSelectedItem();
+        System.out.println(medic);
+        System.out.println(medic);
+
+        // Apoi poți utiliza numele medicului pentru a căuta ID-ul în baza de date
+        int medic_id = 0;
+        DB connection = new DB();
+        Connection conn = connection.getCon();
+        String query = "SELECT id FROM MEDICI WHERE  nume || ' ' || prenume = ?";
+        PreparedStatement preparedStatement = conn.prepareStatement(query);
+        preparedStatement.setString(1, medic);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            medic_id = resultSet.getInt("id");
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+        conn.close();
+
+        return medic_id;
     }
+
 
     private JPanel createComboBoxPanel(String labelText, JComboBox<String> comboBox) {
         JPanel panel = new JPanel();

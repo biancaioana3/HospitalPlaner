@@ -25,6 +25,7 @@ public class DoctorDashboard extends JDialog {
         setSize(700, 650);
 
         Doctors medic = selectMedici(user_id);
+        System.out.println(medic.id);
         this.medic_id = medic.id;
         numeMedic.setText(medic.nume + " " + medic.prenume);
         String specializareMedic = medic.specializare;
@@ -178,6 +179,6 @@ public class DoctorDashboard extends JDialog {
     }
 
     public static void main(String[] args) {
-        DoctorDashboard doctorDashboard = new DoctorDashboard(null, 1);
+        DoctorDashboard doctorDashboard = new DoctorDashboard(null, 25);
     }
 }

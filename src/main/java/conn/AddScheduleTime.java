@@ -104,7 +104,7 @@ public class AddScheduleTime extends JDialog{
                         Appointments appointments = addProgramare();
                         if(appointments != null){
                             JOptionPane.showMessageDialog(parent, "Programare salvata cu succes!" , "Va asteptam!", JOptionPane.INFORMATION_MESSAGE);
-                            dispose();
+                            //dispose();
                         }
                         else{
                             JOptionPane.showMessageDialog(parent,
@@ -130,7 +130,7 @@ public class AddScheduleTime extends JDialog{
         String sql ="UPDATE PROGRAMARI SET ID_MEDIC =?, ID_PACIENT= ? , DATA=?, ORA=? WHERE ID =?";
         CallableStatement callableStatement = conn.prepareCall(sql);
         callableStatement.setInt(1, id_medic);
-        callableStatement.setInt(2, id_medic);
+        callableStatement.setInt(2, id_pacient);
         callableStatement.setDate(3, new java.sql.Date(date.getTime()));
         callableStatement.setString(4, getOra());
         callableStatement.setInt(5,id_programare);
@@ -161,7 +161,7 @@ public class AddScheduleTime extends JDialog{
         System.out.println(id_pacient);
         System.out.println(new SimpleDateFormat("dd-MM-yy").format(date));
         System.out.println(getOra());
-        id_programare = 0;
+        //id_programare = 0;
         Appointments appointments = null;
 
         DB connection = new DB();
