@@ -107,7 +107,15 @@ public class DoctorDashboard extends JDialog {
                 fisaPacientButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        System.out.println("Fisa pacient pentru ID: " + id_pacient);
+                        Patients pacient = new Patients();
+                        try {
+                            pacient = pacient.selectPatientById(id_pacient);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        String nameFile = pacient.nume+"."+pacient.prenume+".txt";
+                        FisaPacient fisaPacient = new FisaPacient();
+                        fisaPacient.generateFisaPacient(nameFile,id_pacient);
                     }
                 });
 
