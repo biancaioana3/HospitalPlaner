@@ -20,6 +20,7 @@ import org.apache.log4j.BasicConfigurator;
 public class DocumentReader extends JDialog {
     private JButton chooseButton;
     private JButton saveButton;
+    private JButton myDocuments;
     private JTextArea textArea;
     private JLabel imageLabel;
     private File selectedFile;
@@ -38,6 +39,8 @@ public class DocumentReader extends JDialog {
 
         chooseButton = new JButton("Choose Document");
         saveButton = new JButton("Save Document");
+        myDocuments = new JButton("Documentele mele");
+
         textArea = new JTextArea();
         imageLabel = new JLabel();
 
@@ -50,6 +53,15 @@ public class DocumentReader extends JDialog {
                     selectedFile = fileChooser.getSelectedFile();
                     String documentName = selectedFile.getName();
                     readDocument(selectedFile, documentName);
+                }
+            }
+        });
+        myDocuments.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    DocumentList documentList = new DocumentList(null, id_pacient);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -75,6 +87,7 @@ public class DocumentReader extends JDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(chooseButton);
         buttonPanel.add(saveButton);
+        buttonPanel.add(myDocuments);
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.add(new JScrollPane(textArea), BorderLayout.CENTER);
@@ -94,20 +107,13 @@ public class DocumentReader extends JDialog {
 
         DB connection = new DB();
         Connection conn = connection.getCon();
-        String sql = "DECLARE " +
-                "    last_insert_document_id NUMBER; " +
-                "BEGIN " +
-                "    INSERT INTO documente (id_pacient, document_type, path, text) " +
-                "    VALUES (?,?,?,?) " +
-                "    RETURNING id INTO last_insert_document_id; " +
-                "    ? := last_insert_document_id; " +
-                "END;";
+        String sql = "INSERT INTO documente (id_pacient, document_type, path, text) " +
+                " VALUES (?,?,?,?) ";
         CallableStatement callableStatement = conn.prepareCall(sql);
         callableStatement.setInt(1, id_pacient);
         callableStatement.setInt(2, document_type);
         callableStatement.setString(3, documentName);
         callableStatement.setString(4, text);
-        callableStatement.registerOutParameter(5, Types.NUMERIC);
 
         callableStatement.execute();
 

@@ -32,7 +32,7 @@ public class AddDocument extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    System.out.println(getDocumentId());
+                   DocumentReader doc = new DocumentReader(null, pacient_id, getDocumentId());
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

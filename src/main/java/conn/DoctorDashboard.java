@@ -12,6 +12,7 @@ public class DoctorDashboard extends JDialog {
     private JLabel telefonMedic;
     private JTextArea textPacient;
     private JButton cencel;
+    private JButton csvProgram;
     public int user_id;
     public int medic_id;
 
@@ -47,6 +48,16 @@ public class DoctorDashboard extends JDialog {
             }
         });
 
+        csvProgram.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    CSVDay csv = new CSVDay(null, medic_id);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         setVisible(true);
     }
 
@@ -79,7 +90,19 @@ public class DoctorDashboard extends JDialog {
                 JLabel resultLabel = new JLabel(resultRow);
 
                 JButton fisaPacientButton = new JButton("Fisa pacient");
+                JButton documentePacient = new JButton("Documente pacient");
                 fisaPacientButton.setPreferredSize(new Dimension(150, 20));
+
+                documentePacient.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            DocumentList doc = new DocumentList(null, id_pacient);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                });
 
                 fisaPacientButton.addActionListener(new ActionListener() {
                     @Override
@@ -91,6 +114,7 @@ public class DoctorDashboard extends JDialog {
                 JPanel buttonsPanel = new JPanel();
                 buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
                 buttonsPanel.add(fisaPacientButton);
+                buttonsPanel.add(documentePacient);
 
                 JPanel rowPanel = new JPanel(new BorderLayout());
                 rowPanel.add(resultLabel, BorderLayout.WEST);

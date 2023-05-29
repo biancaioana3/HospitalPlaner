@@ -10,9 +10,14 @@ import java.sql.*;
 public class DocumentList extends JDialog {
     private JList<String> documentList;
     private JButton downloadButton;
-    private JPanel dataPanel;
+    private JButton addDocument;
+    private JButton cencel;
 
-    public DocumentList(JFrame parent) throws SQLException {
+    private JPanel dataPanel;
+    public int pacient_id;
+
+    public DocumentList(JFrame parent, int pacient_id) throws SQLException {
+        this.pacient_id = pacient_id;
         setTitle("Document List");
         setMaximumSize(new Dimension(450, 474));
         setSize(500, 450);
@@ -20,7 +25,23 @@ public class DocumentList extends JDialog {
 
         documentList = new JList<>();
         downloadButton = new JButton("Download");
+        addDocument = new JButton("Adauga Document");
+        cencel = new JButton("Cencel");
+        cencel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
 
+        addDocument.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    AddDocument addDoc = new AddDocument(null,pacient_id);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         downloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = documentList.getSelectedIndex();
@@ -33,8 +54,11 @@ public class DocumentList extends JDialog {
             }
         });
 
+
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(downloadButton);
+        buttonPanel.add(addDocument);
+        buttonPanel.add(cencel);
 
         dataPanel = new JPanel(new BorderLayout());
         dataPanel.add(new JScrollPane(documentList), BorderLayout.CENTER);
@@ -53,9 +77,11 @@ public class DocumentList extends JDialog {
         DefaultListModel<String> listModel = new DefaultListModel<>();
             DB con = new DB();
             Connection connection = con.getCon();
-            String sql = "SELECT path FROM documente";
+            String sql = "SELECT path FROM documente WHERE id_pacient = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, pacient_id); // înlocuiește "id_pacient" cu variabila ta corespunzătoare
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 String path = resultSet.getString("path");
                 listModel.addElement(path);
@@ -89,7 +115,7 @@ public class DocumentList extends JDialog {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new DocumentList(null);
+                    new DocumentList(null, 1);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

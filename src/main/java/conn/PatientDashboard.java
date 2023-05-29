@@ -18,6 +18,7 @@ public class PatientDashboard extends JDialog{
     private JTextArea textProgramari;
     public int user_id;
     public int pacient_id;
+    public JButton myDocuments;
 
     public PatientDashboard(JDialog parent, int user_id){
         super(parent);
@@ -58,6 +59,15 @@ public class PatientDashboard extends JDialog{
                 }
             }
         });
+        myDocuments.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    DocumentList document = new DocumentList(null, pacient_id);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         addDocument.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -77,6 +87,7 @@ public class PatientDashboard extends JDialog{
         });
 
         bottomPanel.add(addProgramare);
+        bottomPanel.add(myDocuments);
         bottomPanel.add(addDocument);
         bottomPanel.add(cencel);
 
@@ -85,6 +96,16 @@ public class PatientDashboard extends JDialog{
         setVisible(true);
     }
 
+    public void stergeProgramare(int idProgramare) throws SQLException {
+            DB con = new DB();
+            Connection conn = con.getCon();
+            String sql = "DELETE FROM programari WHERE id = ?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, idProgramare);
+                statement.executeUpdate();
+            }
+
+    }
     private void programariSelect() {
         try {
             DB con = new DB();
@@ -119,16 +140,33 @@ public class PatientDashboard extends JDialog{
                 JTextArea resultLabel = new JTextArea(resultRow);
 
 
-                JButton fisaPacientButton = new JButton("Anuleaza programare");
-                fisaPacientButton.setPreferredSize(new Dimension(200, 20));
+                JButton dropProgramButton = new JButton("Anuleaza programare");
+                dropProgramButton.setPreferredSize(new Dimension(200, 20));
 
                 JButton updateProgramare = new JButton("Modifica programarea");
                 updateProgramare.setPreferredSize(new Dimension(200, 20));
 
-                fisaPacientButton.addActionListener(new ActionListener() {
+                dropProgramButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        System.out.println("Fisa pacient pentru ID: " + id);
+                        int option = JOptionPane.showOptionDialog(
+                                null,
+                                "Sigur doriți să ștergeți această programare?",
+                                "Confirmare ștergere",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE,
+                                null,
+                                new Object[] {"Da", "Anulează"},
+                                "Da"
+                        );
+
+                        if (option == JOptionPane.YES_OPTION) {
+                            try {
+                                stergeProgramare(id);
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
                     }
                 });
 
@@ -145,7 +183,7 @@ public class PatientDashboard extends JDialog{
                 });
                 JPanel buttonsPanel = new JPanel();
                 buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-                buttonsPanel.add(fisaPacientButton);
+                buttonsPanel.add(dropProgramButton);
                 buttonsPanel.add(updateProgramare);
 
                 JPanel rowPanel = new JPanel(new BorderLayout());
