@@ -54,6 +54,7 @@ public class PatientDashboard extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 try {
                     AddProgramming addProgramming = new AddProgramming(null,pacient_id, 0);
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -130,7 +131,7 @@ public class PatientDashboard extends JDialog{
                 String ora = resultSet.getString("ora");
                 Date data = resultSet.getDate("data");
                 Patients pacient = new Patients();
-                pacient = pacient.selectPatientById(pacient_id);
+                //pacient = pacient.selectPatientById(pacient_id);
                 String resultRow = "Nume Medic: " + medic.nume +
                         " " + medic.prenume + "\n" +
                         "Telefon: " + medic.telefon + "\n" +

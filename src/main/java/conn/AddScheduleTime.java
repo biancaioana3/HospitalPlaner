@@ -125,7 +125,6 @@ public class AddScheduleTime extends JDialog{
     public Appointments updateProgramare() throws SQLException {
 
         Appointments prog = null;
-
         DB connection = new DB();
         Connection conn = connection.getCon();
         String sql ="UPDATE PROGRAMARI SET ID_MEDIC =?, ID_PACIENT= ? , DATA=?, ORA=? WHERE ID =?";
@@ -158,45 +157,37 @@ public class AddScheduleTime extends JDialog{
     }
     public Appointments addProgramare() throws SQLException {
 
+        System.out.println(id_medic);
+        System.out.println(id_pacient);
+        System.out.println(new SimpleDateFormat("dd-MM-yy").format(date));
+        System.out.println(getOra());
+        id_programare = 0;
         Appointments appointments = null;
 
         DB connection = new DB();
         Connection conn = connection.getCon();
-        String sql = "DECLARE " +
-                "    last_insert_prog_id NUMBER; " +
-                "BEGIN " +
-                "    INSERT INTO PROGRAMARI (ID_MEDIC, ID_PACIENT, DATA, ORA) " +
-                "    VALUES (?,?,?,?) " +
-                "    RETURNING id INTO last_insert_prog_id; " +
-                "    ? := last_insert_prog_id; " +
-                "END;";
+        String sql = "INSERT INTO PROGRAMARI (ID_MEDIC, ID_PACIENT, DATA, ORA) VALUES (?,?,?,?)";
 
         CallableStatement callableStatement = conn.prepareCall(sql);
         callableStatement.setInt(1, id_medic);
         callableStatement.setInt(2, id_pacient);
         callableStatement.setString(3, new SimpleDateFormat("dd-MM-yy").format(date));
         callableStatement.setString(4, getOra());
-        callableStatement.registerOutParameter(5, Types.NUMERIC);
 
-        callableStatement.execute();
+        int rowsAffected = callableStatement.executeUpdate();
 
-        int lastInsertId = callableStatement.getInt(5);
-
-        if (lastInsertId > 0) {
+        if (rowsAffected > 0) {
             appointments = new Appointments();
-            appointments.id = lastInsertId;
             appointments.id_medic = id_medic;
             appointments.id_pacient = id_pacient;
-            appointments.date = date;
-            appointments.ora = ora;
-        } else {
-            throw new SQLException("Failed to retrieve the last inserted ID.");
+            appointments.ora = getOra();
         }
 
         callableStatement.close();
         conn.close();
         return appointments;
     }
+
     private String getOra() throws SQLException {
         this.ora = (String) comboBox.getSelectedItem();
         return  ora;
@@ -234,7 +225,7 @@ public class AddScheduleTime extends JDialog{
 
         Statement statement = connection.createStatement();
         String script =
-                "SELECT " +day+" FROM PROGRAM WHERE ID_MEDIC=?";
+                "SELECT " +day+" FROM PROGRAM WHERE ID=?";
         PreparedStatement stmt = connection.prepareStatement(script);
         stmt.setInt(1, id_medic);
         ResultSet resultSet = stmt.executeQuery();
@@ -260,7 +251,7 @@ public class AddScheduleTime extends JDialog{
             connection = con.getCon();
             statement = connection.createStatement();
 
-            String query = "SELECT ora FROM programari WHERE DATA = ?";
+            String query = "SELECT ora FROM programari WHERE DATA = ? AND ID_MEDIC = ?";
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
             String formattedDate = dateFormat.format(date);
 
@@ -279,6 +270,7 @@ public class AddScheduleTime extends JDialog{
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, formattedDate);
+            preparedStatement.setInt(2,id_medic);
             resultSet = preparedStatement.executeQuery();
             List<String> oreProgramate = new ArrayList<>();
 
@@ -324,6 +316,6 @@ public class AddScheduleTime extends JDialog{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AddScheduleTime addScheduleTime = new AddScheduleTime(null, 4, 1, 1, data, 1);
+        AddScheduleTime addScheduleTime = new AddScheduleTime(null, 3, 21, 1, data, 0);
     }
 }

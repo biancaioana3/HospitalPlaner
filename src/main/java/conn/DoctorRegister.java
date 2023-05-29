@@ -56,6 +56,7 @@ public class DoctorRegister extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 try {
                     registerMedic();
+                    DoctorDashboard doctor = new DoctorDashboard(null, id);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

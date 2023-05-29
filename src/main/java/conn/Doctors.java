@@ -33,7 +33,7 @@ public class Doctors {
         Connection connection = conn.getCon();
         try (connection;
              Statement statement = connection.createStatement()) {
-        String script="create table doctors ( \n" +
+        String script="create table medici ( \n" +
                 "id NUMBER(5) PRIMARY KEY, \n" +
                 "nume VARCHAR2(25), \n" +
                 "prenume VARCHAR2(25), \n" +

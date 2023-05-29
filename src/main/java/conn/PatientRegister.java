@@ -19,7 +19,6 @@ public class PatientRegister extends JDialog{
     private JSpinner JsVarsta;
     private JComboBox JcGen;
     private JButton JbSave;
-    private JPanel patientRegister;
     private JPanel pacientRegister;
 
     public PatientRegister(JFrame parent, int id){
@@ -38,6 +37,7 @@ public class PatientRegister extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 try {
                     registerPacient();
+                    PatientDashboard pacient = new PatientDashboard(null, id);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
